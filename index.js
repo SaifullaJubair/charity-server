@@ -45,6 +45,9 @@ const run = async () => {
         }).format(currentDate);
 
         const { name, email, password } = req.body;
+        if (!name || !email || !password) {
+          return res.status(400).json({ error: "All fields are required" });
+        }
         // Check if the user already exists
         const existingUser = await usersCollection.findOne({ email });
         if (existingUser) {
@@ -53,7 +56,7 @@ const run = async () => {
 
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
-
+        // validate
         // Create New User
         const newUser = {
           name,
