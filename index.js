@@ -24,6 +24,33 @@ const run = async () => {
     const DB = client.db("charity");
     const usersCollection = DB.collection("users");
     // ---------All collection End here----------
+
+    app.post("/users", async (req, res) => {
+      try {
+        const { name, email, password } = req.body;
+        // Check if the user already exists
+        const existingUser = await usersCollection.findOne({ email });
+        if (existingUser) {
+          return res.json({ error: "User already exists" });
+        }
+
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Create New User
+        const newUser = {
+          name,
+          email,
+          password: hashedPassword,
+          role: "user",
+        };
+        const result = await usersCollection.insertOne(newUser);
+        res.send(result);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal server error" });
+      }
+    });
   } finally {
   }
 };
