@@ -24,9 +24,26 @@ const run = async () => {
     const DB = client.db("charity");
     const usersCollection = DB.collection("users");
     // ---------All collection End here----------
-
+    // USER API START
+    // Get All Users
+    app.get("/users", async (req, res) => {
+      const result = await usersCollection
+        .find({})
+        .sort({ date: -1 })
+        .toArray();
+      res.send(result);
+    });
+    // Create User
     app.post("/users", async (req, res) => {
       try {
+        // date format
+        const currentDate = new Date();
+        const formattedDate = new Intl.DateTimeFormat("en-US", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        }).format(currentDate);
+
         const { name, email, password } = req.body;
         // Check if the user already exists
         const existingUser = await usersCollection.findOne({ email });
@@ -43,6 +60,7 @@ const run = async () => {
           email,
           password: hashedPassword,
           role: "user",
+          date: formattedDate,
         };
         const result = await usersCollection.insertOne(newUser);
         res.send(result);
@@ -51,6 +69,8 @@ const run = async () => {
         res.status(500).json({ error: "Internal server error" });
       }
     });
+
+    // USER API START
   } finally {
   }
 };
