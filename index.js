@@ -20,6 +20,10 @@ const client = new MongoClient(uri, {
 
 const run = async () => {
   try {
+    //---------All collection Start here---------
+    const DB = client.db("charity");
+    const usersCollection = DB.collection("users");
+    // ---------All collection End here----------
   } finally {
   }
 };
