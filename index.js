@@ -26,6 +26,7 @@ const run = async () => {
     //---------All collection Start here---------
     const DB = client.db("charity");
     const usersCollection = DB.collection("users");
+    const causeCollection = DB.collection("causes");
     // ---------All collection End here----------
     // USER API START
     // Get All Users
@@ -105,7 +106,24 @@ const run = async () => {
       }
     });
 
-    // USER API START
+    // USER API END
+
+    // Get All Causes
+
+    app.get("/causes", async (req, res) => {
+      try {
+        const result = await causeCollection
+          .find({})
+          .sort({ date: -1 })
+          .toArray();
+        res.send(result);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal server error" });
+      }
+    });
+
+    //---------All API End here---------
   } finally {
   }
 };
