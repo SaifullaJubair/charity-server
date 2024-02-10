@@ -136,6 +136,19 @@ const run = async () => {
       }
     });
 
+    // Create Cause
+
+    app.post("/causes", async (req, res) => {
+      try {
+        const cause = req.body;
+        const result = await causeCollection.insertOne(cause);
+        res.send(result);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal server error" });
+      }
+    });
+
     //---------All API End here---------
   } finally {
   }
