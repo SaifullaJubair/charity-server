@@ -172,6 +172,20 @@ const run = async () => {
       }
     });
 
+    // Delete Cause
+
+    app.delete("/causes/:id", async (req, res) => {
+      try {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = await causeCollection.deleteOne(query);
+        res.send(result);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal server error" });
+      }
+    });
+
     //---------All API End here---------
   } finally {
   }
