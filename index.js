@@ -27,6 +27,7 @@ const run = async () => {
     const DB = client.db("charity");
     const usersCollection = DB.collection("users");
     const causeCollection = DB.collection("causes");
+    const donationCollection = DB.collection("donations");
     // ---------All collection End here----------
     // USER API START
     // Get All Users
@@ -108,6 +109,7 @@ const run = async () => {
 
     // USER API END
 
+    //------ CAUSE API START ---------
     // Get All Causes
 
     app.get("/causes", async (req, res) => {
@@ -179,6 +181,41 @@ const run = async () => {
         const id = req.params.id;
         const query = { _id: new ObjectId(id) };
         const result = await causeCollection.deleteOne(query);
+        res.send(result);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal server error" });
+      }
+    });
+
+    //------ CAUSE API END ---------
+
+    app.get("/donations", async (req, res) => {
+      try {
+        const result = await donationCollection
+          .find({})
+          .sort({ date: -1 })
+          .toArray();
+        res.send(result);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal server error" });
+      }
+    });
+
+    app.post("/donations", async (req, res) => {
+      try {
+        const currentDate = new Date();
+        const formattedDate = new Intl.DateTimeFormat("en-US", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        }).format(currentDate);
+        const donation = req.body;
+        const result = await donationCollection.insertOne({
+          ...donation,
+          date: formattedDate,
+        });
         res.send(result);
       } catch (error) {
         console.error(error);
