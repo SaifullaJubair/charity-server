@@ -14,9 +14,11 @@ app.use(express.json());
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.5u9qcxt.mongodb.net/?retryWrites=true&w=majority`;
 
 const client = new MongoClient(uri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  serverApi: ServerApiVersion.v1,
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  },
 });
 
 const run = async () => {
@@ -64,7 +66,7 @@ const run = async () => {
       }
     });
     // Create User
-    app.post("/register", async (req, res) => {
+    app.post("/signup", async (req, res) => {
       try {
         // date format
         const currentDate = new Date();
