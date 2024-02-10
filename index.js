@@ -122,6 +122,19 @@ const run = async () => {
         res.status(500).json({ error: "Internal server error" });
       }
     });
+    // Get Single Cause
+
+    app.get("/causes/:id", async (req, res) => {
+      try {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = await causeCollection.findOne(query);
+        res.send(result);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal server error" });
+      }
+    });
 
     //---------All API End here---------
   } finally {
