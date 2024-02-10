@@ -149,6 +149,29 @@ const run = async () => {
       }
     });
 
+    // Update Cause
+
+    app.put("/causes/:id", async (req, res) => {
+      try {
+        const id = req.params.id;
+        const cause = req.body;
+        const filter = { _id: new ObjectId(id) };
+        const options = { upsert: true };
+        const updateDoc = {
+          $set: cause,
+        };
+        const result = await causeCollection.updateOne(
+          filter,
+          updateDoc,
+          options
+        );
+        res.send(result);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal server error" });
+      }
+    });
+
     //---------All API End here---------
   } finally {
   }
