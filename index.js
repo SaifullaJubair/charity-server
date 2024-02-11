@@ -202,7 +202,20 @@ const run = async () => {
         res.status(500).json({ error: "Internal server error" });
       }
     });
-
+    // get donation by mail
+    app.get("/donations/:email", async (req, res) => {
+      try {
+        const email = req.params.email;
+        const result = await donationCollection
+          .find({ email })
+          .sort({ date: -1 })
+          .toArray();
+        res.send(result);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal server error" });
+      }
+    });
     app.post("/donations", async (req, res) => {
       try {
         const currentDate = new Date();
