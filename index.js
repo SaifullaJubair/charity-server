@@ -112,23 +112,32 @@ const run = async () => {
       try {
         const id = req.params.id;
         const filter = { _id: new ObjectId(id) };
-        const options = { upsert: true };
+
+        // Fetch the user document to determine the current role
+        const currentUser = await usersCollection.findOne(filter);
+
+        if (!currentUser) {
+          return res.status(404).json({ error: "User not found" });
+        }
+
+        // Determine the new role based on the current role
+        const newRole = currentUser.role === "admin" ? "user" : "admin";
+
         const updateDoc = {
           $set: {
-            role: "admin",
+            role: newRole,
           },
         };
-        const result = await usersCollection.updateOne(
-          filter,
-          updateDoc,
-          options
-        );
+
+        const result = await usersCollection.updateOne(filter, updateDoc);
+
         res.send(result);
       } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Internal server error" });
       }
     });
+
     // USER API END
 
     //------ CAUSE API START ---------
