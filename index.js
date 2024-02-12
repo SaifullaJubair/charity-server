@@ -107,6 +107,18 @@ const run = async () => {
       }
     });
 
+    // get user by email
+    app.get("/users/:email", async (req, res) => {
+      try {
+        const email = req.params.email;
+        const query = { email: email };
+        const result = await usersCollection.findOne(query);
+        res.send(result);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal server error" });
+      }
+    });
     // Update user role to admin
     app.put("/users/:id", async (req, res) => {
       try {
